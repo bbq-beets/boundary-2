@@ -12,6 +12,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"os/exec"
 	"path"
 	"path/filepath"
 	"strings"
@@ -97,7 +98,10 @@ func gotNewServer(t testing.TB, opt ...TestOption) *TestVaultServer {
 	dockerOptions := &dockertest.RunOptions{
 		Repository: vaultRepository,
 		Tag:        vaultVersion,
-		Env:        []string{fmt.Sprintf("VAULT_DEV_ROOT_TOKEN_ID=%s", server.RootToken)},
+		Env: []string{
+			fmt.Sprintf("VAULT_DEV_ROOT_TOKEN_ID=%s", server.RootToken),
+			"VAULT_LOG_LEVEL=debug",
+		},
 	}
 
 	vConfig := vault.DefaultConfig()
@@ -372,6 +376,13 @@ grant closed_role to "{{name}}";
 func cleanupResource(t testing.TB, pool *dockertest.Pool, resource *dockertest.Resource) {
 	t.Helper()
 	var err error
+
+	o, err := exec.Command("docker", "logs", resource.Container.ID).CombinedOutput()
+	if err != nil {
+		t.Errorf("failed to get docker logs for %s", resource.Container.ID)
+	}
+	t.Logf("docker logs %s:\n%s\n", resource.Container.ID, string(o))
+
 	for i := 0; i < 10; i++ {
 		err = pool.Purge(resource)
 		if err == nil {
