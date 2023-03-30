@@ -100,7 +100,7 @@ func gotNewServer(t testing.TB, opt ...TestOption) *TestVaultServer {
 		Tag:        vaultVersion,
 		Env: []string{
 			fmt.Sprintf("VAULT_DEV_ROOT_TOKEN_ID=%s", server.RootToken),
-			"VAULT_LOG_LEVEL=debug",
+			"VAULT_LOG_LEVEL=trace",
 		},
 	}
 
