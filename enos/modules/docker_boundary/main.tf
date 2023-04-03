@@ -44,7 +44,12 @@ resource "docker_image" "boundary" {
 }
 
 resource "enos_local_exec" "init_database" {
-  inline = ["bash ./${path.module}/init.sh \"${var.image_name}\" \"${var.postgres_address}\""]
+  environment = {
+    TEST_BOUNDARY_IMAGE   = var.image_name,
+    TEST_DATABASE_ADDRESS = var.postgres_address,
+    TEST_NETWORK_NAME     = var.network_name
+  }
+  inline = ["bash ./${path.module}/init.sh"]
 }
 
 locals {
