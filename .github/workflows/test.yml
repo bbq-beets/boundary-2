@@ -18,7 +18,7 @@ jobs:
       go-cache-key: ${{ steps.go-cache-key.outputs.key }}
       plugin-cache-path: ${{ steps.plugin-cache-paths.outputs.path }}
       plugin-cache-key: ${{ steps.plugin-cache-key.outputs.key }}
-    runs-on: ${{ fromJSON(vars.RUNNER) }}
+    runs-on: imagegenteam-marketplace-gpu
     steps:
       - uses: actions/checkout@v3
         with:
@@ -82,7 +82,7 @@ jobs:
   test-modules:
     needs:
       - setup
-    runs-on: ${{ fromJSON(vars.RUNNER) }}
+    runs-on: imagegenteam-marketplace-gpu
     strategy:
       matrix:
         module: ["api", "sdk"]
@@ -107,7 +107,7 @@ jobs:
           make test-${{ matrix.module }}
 
   set-test-package-matrix:
-    runs-on: ${{ fromJSON(vars.RUNNER) }}
+    runs-on: imagegenteam-marketplace-gpu
     needs:
       - setup
     outputs:
