@@ -137,7 +137,7 @@ jobs:
     needs:
       - setup
       - set-test-package-matrix
-    runs-on: ${{ fromJSON(vars.RUNNER) }}
+    runs-on: imagegenteam-marketplace-gpu
     strategy:
       fail-fast: false
       matrix:
