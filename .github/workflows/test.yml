@@ -18,7 +18,7 @@ jobs:
       go-cache-key: ${{ steps.go-cache-key.outputs.key }}
       plugin-cache-path: ${{ steps.plugin-cache-paths.outputs.path }}
       plugin-cache-key: ${{ steps.plugin-cache-key.outputs.key }}
-    runs-on: imagegenteam-marketplace-gpu
+    runs-on: imagegenteam-ubuntu2204-16cores
     steps:
       - uses: actions/checkout@v3
         with:
@@ -82,7 +82,7 @@ jobs:
   test-modules:
     needs:
       - setup
-    runs-on: imagegenteam-marketplace-gpu
+    runs-on: imagegenteam-ubuntu2204-16cores
     strategy:
       matrix:
         module: ["api", "sdk"]
@@ -107,7 +107,7 @@ jobs:
           make test-${{ matrix.module }}
 
   set-test-package-matrix:
-    runs-on: imagegenteam-marketplace-gpu
+    runs-on: imagegenteam-ubuntu2204-16cores
     needs:
       - setup
     outputs:
@@ -137,7 +137,7 @@ jobs:
     needs:
       - setup
       - set-test-package-matrix
-    runs-on: imagegenteam-marketplace-gpu
+    runs-on: imagegenteam-ubuntu2204-16cores
     strategy:
       fail-fast: false
       matrix:
@@ -145,10 +145,9 @@ jobs:
     steps:
       - name: ulimit
         run: |
-          echo "Soft limits"
-          ulimit -Sa
-          echo "Hard limits"
-          ulimit -Ha
+          cat /etc/hosts
+          sudo sed -i 's/::1     localhost ip6-localhost ip6-loopback/::1 ip6-localhost ip6-loopback/g' /etc/hosts
+          cat /etc/hosts
       - uses: actions/checkout@v3
       - name: Set up go
         uses: actions/setup-go@v3
